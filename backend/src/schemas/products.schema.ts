@@ -15,6 +15,7 @@ export const productQuerySchema = z.object({
   isNew: z.coerce.boolean().optional(),
   isBest: z.coerce.boolean().optional(),
   isFeatured: z.coerce.boolean().optional(),
+  onSale: z.coerce.boolean().optional(),
   q: z.string().optional(),
   sellerId: z.string().optional(),
 });

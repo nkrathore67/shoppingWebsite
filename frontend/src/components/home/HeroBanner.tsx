@@ -30,7 +30,7 @@ const SLIDES = [
     title: "Up to 50% Off",
     subtitle: "Grab amazing deals on premium brands. Limited time offer!",
     cta: "Shop the Sale",
-    href: "/search?q=sale",
+    href: "/search?onSale=true",
     bg: "from-red-900 to-red-600",
     image: "https://picsum.photos/seed/hero-sale-3/1200/600",
   },

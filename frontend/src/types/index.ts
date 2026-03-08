@@ -140,5 +140,6 @@ export interface ProductFilters {
   isNew?: boolean;
   isBest?: boolean;
   isFeatured?: boolean;
+  onSale?: boolean;
   q?: string;
 }

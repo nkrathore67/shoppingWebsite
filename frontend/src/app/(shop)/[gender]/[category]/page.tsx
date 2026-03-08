@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { GenderProductListing } from "@/components/product/GenderProductListing";
 import { slugToTitle } from "@/lib/utils";
 import Link from "next/link";
@@ -25,6 +25,7 @@ export default async function CategoryPage({
   const { gender, category } = await params;
 
   if (!VALID_GENDERS.includes(gender)) notFound();
+  if (category === "sale-discounts") redirect(`/search?onSale=true&gender=${gender.toUpperCase()}`);
 
   const genderLabel = slugToTitle(gender);
   const categoryLabel = slugToTitle(category);

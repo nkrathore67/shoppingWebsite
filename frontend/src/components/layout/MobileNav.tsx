@@ -11,7 +11,7 @@ const MOBILE_LINKS = [
   { label: "Kids", href: "/kids" },
   { label: "New Arrivals", href: "/search?isNew=true" },
   { label: "Best Sellers", href: "/search?isBest=true" },
-  { label: "Sale", href: "/search?q=sale" },
+  { label: "Sale", href: "/search?onSale=true" },
   { label: "My Account", href: "/account" },
   { label: "My Orders", href: "/account/orders" },
   { label: "Wishlist", href: "/account/wishlist" },
