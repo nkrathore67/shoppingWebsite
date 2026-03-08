@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
@@ -42,7 +42,6 @@ export default function SellerNewProductPage() {
     { size: "M", color: "Black", stock: 10, sku: "" },
   ]);
   const [uploading, setUploading] = useState<number | null>(null);
-  const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleFileUpload = async (index: number, file: File) => {
     setUploading(index);
@@ -177,8 +176,9 @@ export default function SellerNewProductPage() {
         <div className="bg-white rounded-xl border p-6 space-y-3">
           <h2 className="font-semibold text-gray-900">Images</h2>
           {form.images.map((img, i) => (
-            <div key={i} className="space-y-1.5">
-              <div className="flex gap-2">
+            <div key={i} className="space-y-2 pb-3 border-b last:border-b-0 last:pb-0">
+              <div className="flex gap-2 items-center">
+                {/* URL input */}
                 <Input
                   value={img}
                   onChange={(e) => {
@@ -186,39 +186,36 @@ export default function SellerNewProductPage() {
                     imgs[i] = e.target.value;
                     setForm({ ...form, images: imgs });
                   }}
-                  placeholder="https://example.com/image.jpg or upload below"
+                  placeholder="Paste image URL here"
+                  className="flex-1"
                 />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  title="Upload from device"
-                  disabled={uploading === i}
-                  onClick={() => fileInputRefs.current[i]?.click()}
-                >
-                  {uploading === i ? (
-                    <span className="h-4 w-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Upload className="h-4 w-4" />
-                  )}
-                </Button>
                 {form.images.length > 1 && (
                   <Button type="button" variant="ghost" size="icon" onClick={() => setForm({ ...form, images: form.images.filter((_, j) => j !== i) })}>
                     <Trash2 className="h-4 w-4 text-red-500" />
                   </Button>
                 )}
+              </div>
+              {/* File upload */}
+              <label className={`flex items-center gap-2 w-fit cursor-pointer px-3 py-1.5 rounded-md border border-dashed text-sm font-medium transition-colors ${uploading === i ? "text-gray-400 border-gray-200 cursor-not-allowed" : "text-emerald-700 border-emerald-300 hover:bg-emerald-50"}`}>
+                {uploading === i ? (
+                  <span className="h-4 w-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin inline-block" />
+                ) : (
+                  <Upload className="h-4 w-4" />
+                )}
+                {uploading === i ? "Uploading..." : "Upload from device"}
                 <input
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  ref={(el) => { fileInputRefs.current[i] = el; }}
+                  disabled={uploading !== null}
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) handleFileUpload(i, file);
                     e.target.value = "";
                   }}
                 />
-              </div>
+              </label>
+              {/* Preview */}
               {img && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={img} alt="preview" className="h-20 w-16 object-cover rounded border" />
