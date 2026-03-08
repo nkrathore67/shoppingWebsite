@@ -32,6 +32,7 @@ export async function getProducts(query: ProductQuery) {
   if (query.isNew) where.isNewArrival = true;
   if (query.isBest) where.isBestSeller = true;
   if (query.isFeatured) where.isFeatured = true;
+  if (query.onSale) where.comparePrice = { not: null };
 
   if (query.sizes) {
     const sizes = query.sizes.split(",");

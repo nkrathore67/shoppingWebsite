@@ -18,12 +18,14 @@ function SearchContent() {
   const isNew = searchParams.get("isNew") === "true";
   const isBest = searchParams.get("isBest") === "true";
   const isFeatured = searchParams.get("isFeatured") === "true";
+  const onSale = searchParams.get("onSale") === "true";
 
   const [filters, setFilters] = useState<ProductFilters>({
     q: q || undefined,
     isNew: isNew || undefined,
     isBest: isBest || undefined,
     isFeatured: isFeatured || undefined,
+    onSale: onSale || undefined,
     sort: "newest",
     page: 1,
     limit: 24,
@@ -41,6 +43,8 @@ function SearchContent() {
 
   const pageTitle = q
     ? `Search results for "${q}"`
+    : onSale
+    ? "Sale"
     : isFeatured
     ? "Featured Products"
     : isNew

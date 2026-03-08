@@ -41,7 +41,7 @@ export function Footer() {
               <li><Link href="/kids" className="hover:text-white transition-colors">Kids</Link></li>
               <li><Link href="/search?isFeatured=true" className="hover:text-white transition-colors">New Arrivals</Link></li>
               <li><Link href="/search?isBest=true" className="hover:text-white transition-colors">Best Sellers</Link></li>
-              <li><Link href="/search?q=sale" className="hover:text-white transition-colors text-red-400">Sale</Link></li>
+              <li><Link href="/search?onSale=true" className="hover:text-white transition-colors text-red-400">Sale</Link></li>
             </ul>
           </div>
 

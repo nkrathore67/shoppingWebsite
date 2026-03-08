@@ -3,6 +3,9 @@ import Fastify from "fastify";
 import fastifyCors from "@fastify/cors";
 import fastifyCookie from "@fastify/cookie";
 import fastifyRateLimit from "@fastify/rate-limit";
+import fastifyMultipart from "@fastify/multipart";
+import fastifyStatic from "@fastify/static";
+import path from "path";
 import { env } from "./config/env";
 
 // Routes
@@ -18,6 +21,7 @@ import { userRoutes, adminUserRoutes } from "./routes/users.routes";
 import { paymentRoutes } from "./routes/payment.routes";
 import { adminRoutes } from "./routes/admin.routes";
 import { sellerRoutes } from "./routes/seller.routes";
+import { uploadRoutes } from "./routes/upload.routes";
 
 export function buildApp() {
   const app = Fastify({
@@ -40,6 +44,13 @@ export function buildApp() {
   });
 
   app.register(fastifyCookie);
+
+  app.register(fastifyMultipart, { limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB
+
+  app.register(fastifyStatic, {
+    root: path.join(process.cwd(), "uploads"),
+    prefix: "/uploads/",
+  });
 
   app.register(fastifyRateLimit, {
     max: 100,
@@ -64,6 +75,9 @@ export function buildApp() {
   app.register(reviewRoutes, { prefix: "/api" });
   app.register(searchRoutes, { prefix: "/api/search" });
   app.register(paymentRoutes, { prefix: "/api/payments" });
+
+  // Upload route
+  app.register(uploadRoutes, { prefix: "/api" });
 
   // Seller routes
   app.register(sellerRoutes, { prefix: "/api/seller" });

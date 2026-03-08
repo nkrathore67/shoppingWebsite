@@ -73,7 +73,7 @@ export function NavMenu({ categories }: NavMenuProps) {
       ))}
 
       <Link
-        href="/search?q=sale"
+        href="/search?onSale=true"
         className="px-3 py-2 text-sm font-semibold text-red-500 hover:text-red-600 transition-colors"
       >
         Sale
