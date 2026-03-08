@@ -14,7 +14,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { gender, category } = await params;
   const title = `${slugToTitle(category)} — ${slugToTitle(gender)}'s Collection`;
-  return { title, description: `Shop ${gender}'s ${slugToTitle(category)} at StyleHub` };
+  return { title, description: `Shop ${gender}'s ${slugToTitle(category)} at ThikanaWear` };
 }
 
 export default async function CategoryPage({

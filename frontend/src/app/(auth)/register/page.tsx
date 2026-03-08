@@ -22,7 +22,7 @@ export default function RegisterPage() {
     try {
       await api.post("/auth/register", form);
       await signIn("credentials", { email: form.email, password: form.password, redirect: false });
-      toast.success("Account created! Welcome to StyleHub.");
+      toast.success("Account created! Welcome to ThikanaWear.");
       router.push("/");
     } catch {
       toast.error("Registration failed. Please try again.");
@@ -37,10 +37,10 @@ export default function RegisterPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
             <ShoppingBag className="h-8 w-8 text-purple-600" />
-            <span className="text-2xl font-bold text-gray-900">StyleHub</span>
+            <span className="text-2xl font-bold text-gray-900">ThikanaWear</span>
           </Link>
           <h1 className="mt-4 text-2xl font-bold text-gray-900">Create account</h1>
-          <p className="mt-1 text-sm text-gray-600">Join StyleHub for exclusive deals</p>
+          <p className="mt-1 text-sm text-gray-600">Join ThikanaWear for exclusive deals</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border p-8">

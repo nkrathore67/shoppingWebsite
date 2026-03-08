@@ -39,7 +39,7 @@ export function MobileNav() {
       >
         <div className="flex flex-col h-full">
           <div className="border-b px-4 py-4">
-            <p className="text-lg font-semibold text-gray-900">StyleHub</p>
+            <p className="text-lg font-semibold text-gray-900">ThikanaWear</p>
           </div>
 
           <nav className="flex-1 overflow-y-auto py-4">

@@ -10,7 +10,7 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <ShoppingBag className="h-6 w-6 text-purple-400" />
-              <span className="text-xl font-bold text-white">StyleHub</span>
+              <span className="text-xl font-bold text-white">ThikanaWear</span>
             </div>
             <p className="text-sm text-gray-400 mb-4">
               Your one-stop destination for the latest fashion trends for men,
@@ -74,7 +74,7 @@ export function Footer() {
 
         <div className="mt-12 border-t border-gray-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} StyleHub. All rights reserved.
+            © {new Date().getFullYear()} ThikanaWear. All rights reserved.
           </p>
           <div className="flex gap-4 text-sm text-gray-500">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
