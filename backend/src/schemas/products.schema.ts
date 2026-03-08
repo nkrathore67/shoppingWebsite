@@ -16,9 +16,11 @@ export const productQuerySchema = z.object({
   isBest: z.coerce.boolean().optional(),
   isFeatured: z.coerce.boolean().optional(),
   q: z.string().optional(),
+  sellerId: z.string().optional(),
 });
 
 export const createProductSchema = z.object({
+  sellerId: z.string().optional(),
   name: z.string().min(2).max(255),
   description: z.string().min(10),
   price: z.number().positive(),

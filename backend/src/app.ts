@@ -17,6 +17,7 @@ import { searchRoutes } from "./routes/search.routes";
 import { userRoutes, adminUserRoutes } from "./routes/users.routes";
 import { paymentRoutes } from "./routes/payment.routes";
 import { adminRoutes } from "./routes/admin.routes";
+import { sellerRoutes } from "./routes/seller.routes";
 
 export function buildApp() {
   const app = Fastify({
@@ -63,6 +64,9 @@ export function buildApp() {
   app.register(reviewRoutes, { prefix: "/api" });
   app.register(searchRoutes, { prefix: "/api/search" });
   app.register(paymentRoutes, { prefix: "/api/payments" });
+
+  // Seller routes
+  app.register(sellerRoutes, { prefix: "/api/seller" });
 
   // Admin routes
   app.register(adminRoutes, { prefix: "/api/admin" });

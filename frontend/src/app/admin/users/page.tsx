@@ -1,18 +1,39 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 import { format } from "date-fns";
 
+type UserRow = { id: string; name: string; email: string; role: string; createdAt: string; _count: { orders: number } };
+
+const ROLE_COLORS: Record<string, string> = {
+  ADMIN: "text-purple-700 bg-purple-50",
+  SELLER: "text-emerald-700 bg-emerald-50",
+  CUSTOMER: "text-gray-600 bg-gray-100",
+};
+
 export default function AdminUsersPage() {
+  const queryClient = useQueryClient();
+
   const { data, isLoading } = useQuery({
     queryKey: ["adminUsers"],
     queryFn: async () => {
       const { data } = await api.get("/admin/users");
       return data;
     },
+  });
+
+  const { mutate: changeRole } = useMutation({
+    mutationFn: ({ id, role }: { id: string; role: string }) =>
+      api.patch(`/admin/users/${id}/role`, { role }),
+    onSuccess: () => {
+      toast.success("Role updated");
+      queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+    },
+    onError: () => toast.error("Failed to update role"),
   });
 
   return (
@@ -38,16 +59,26 @@ export default function AdminUsersPage() {
                     ))}
                   </tr>
                 ))
-              : data?.users.map((user: { id: string; name: string; email: string; role: string; createdAt: string; _count: { orders: number } }) => (
+              : data?.users.map((user: UserRow) => (
                   <tr key={user.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3">
                       <p className="text-sm font-medium text-gray-900">{user.name}</p>
                       <p className="text-xs text-gray-500">{user.email}</p>
                     </td>
                     <td className="px-4 py-3">
-                      <Badge className={user.role === "ADMIN" ? "bg-purple-100 text-purple-800" : "bg-gray-100 text-gray-600"}>
-                        {user.role}
-                      </Badge>
+                      <Select
+                        value={user.role}
+                        onValueChange={(role) => role && changeRole({ id: user.id, role })}
+                      >
+                        <SelectTrigger className={`h-7 w-28 text-xs font-medium border-0 ${ROLE_COLORS[user.role] ?? ""}`}>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="CUSTOMER">CUSTOMER</SelectItem>
+                          <SelectItem value="SELLER">SELLER</SelectItem>
+                          <SelectItem value="ADMIN">ADMIN</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </td>
                     <td className="px-4 py-3">
                       <span className="text-sm text-gray-700">{user._count?.orders ?? 0}</span>
