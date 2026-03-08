@@ -98,7 +98,7 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <ShoppingBag className="h-6 w-6 text-purple-600" />
-          <span className="text-xl font-bold text-gray-900">StyleHub</span>
+          <span className="text-xl font-bold text-gray-900">ThikanaWear</span>
         </Link>
 
         {/* Desktop Nav */}

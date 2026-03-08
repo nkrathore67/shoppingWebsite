@@ -4,9 +4,9 @@ import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { HomeProductSections } from "@/components/home/HomeProductSections";
 
 export const metadata: Metadata = {
-  title: "StyleHub — Fashion for Everyone",
+  title: "ThikanaWear — Fashion for Everyone",
   description:
-    "Discover the latest trends in men's, women's, and kids' fashion at StyleHub.",
+    "Discover the latest trends in men's, women's, and kids' fashion at ThikanaWear.",
 };
 
 export default function HomePage() {

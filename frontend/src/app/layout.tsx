@@ -10,8 +10,8 @@ const geist = Geist({
 
 export const metadata: Metadata = {
   title: {
-    default: "StyleHub — Fashion for Everyone",
-    template: "%s | StyleHub",
+    default: "ThikanaWear — Fashion for Everyone",
+    template: "%s | ThikanaWear",
   },
   description:
     "Shop the latest trends in men's, women's, and kids' fashion. Ethnic wear, western wear, casual wear, and more.",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    siteName: "StyleHub",
+    siteName: "ThikanaWear",
   },
 };
 

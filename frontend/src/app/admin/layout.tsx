@@ -16,7 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="p-6">
           <Link href="/" className="flex items-center gap-2">
             <Tag className="h-6 w-6 text-purple-400" />
-            <span className="font-bold text-lg">StyleHub Admin</span>
+            <span className="font-bold text-lg">ThikanaWear Admin</span>
           </Link>
         </div>
         <nav className="px-3 space-y-1">
