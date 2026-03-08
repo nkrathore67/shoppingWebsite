@@ -11,6 +11,7 @@ datasource db {
 
 enum Role {
   CUSTOMER
+  SELLER
   ADMIN
 }
 
@@ -49,6 +50,7 @@ model User {
   emailVerified Boolean  @default(false)
   phone         String?
   avatarUrl     String?
+  storeName     String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -58,6 +60,7 @@ model User {
   wishlistItems Wishlist[]
   reviews       Review[]
   refreshTokens RefreshToken[]
+  sellerProducts Product[]     @relation("SellerProducts")
 
   @@map("users")
 }
@@ -132,6 +135,7 @@ model Product {
   material     String?
   tags         String[]
   images       String[]
+  sellerId     String?
   isActive     Boolean  @default(true)
   isFeatured   Boolean  @default(false)
   isNewArrival Boolean  @default(false)
@@ -143,6 +147,7 @@ model Product {
   updatedAt    DateTime @updatedAt
 
   category      Category         @relation(fields: [categoryId], references: [id])
+  seller        User?            @relation("SellerProducts", fields: [sellerId], references: [id])
   variants      ProductVariant[]
   orderItems    OrderItem[]
   cartItems     CartItem[]

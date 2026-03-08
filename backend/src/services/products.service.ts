@@ -9,6 +9,7 @@ export async function getProducts(query: ProductQuery) {
 
   const where: Prisma.ProductWhereInput = { isActive: true };
 
+  if (query.sellerId) where.sellerId = query.sellerId;
   if (query.gender) where.gender = query.gender;
   if (query.q) {
     where.OR = [
@@ -123,14 +124,15 @@ export async function getBestSellers() {
   });
 }
 
-export async function createProduct(input: CreateProductInput) {
+export async function createProduct(input: CreateProductInput & { sellerId?: string }) {
   const slug = slugify(input.name);
-  const { variants, ...productData } = input;
+  const { variants, sellerId, ...productData } = input;
 
   return prisma.product.create({
     data: {
       ...productData,
       slug,
+      ...(sellerId && { sellerId }),
       totalStock: variants.reduce((sum, v) => sum + v.stock, 0),
       variants: { create: variants },
     },

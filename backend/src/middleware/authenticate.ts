@@ -24,3 +24,10 @@ export async function requireAdmin(req: FastifyRequest, reply: FastifyReply) {
     return reply.status(403).send({ error: "Forbidden", message: "Admin access required" });
   }
 }
+
+export async function requireSeller(req: FastifyRequest, reply: FastifyReply) {
+  const user = (req as FastifyRequest & { user?: { role: string } }).user;
+  if (!user || (user.role !== "SELLER" && user.role !== "ADMIN")) {
+    return reply.status(403).send({ error: "Forbidden", message: "Seller access required" });
+  }
+}
