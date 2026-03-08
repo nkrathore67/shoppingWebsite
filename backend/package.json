@@ -18,6 +18,8 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
     "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^11.2.0",
     "@fastify/jwt": "^10.0.0",
@@ -46,8 +48,6 @@
     "@types/node": "^25.3.5",
     "eslint": "^10.0.3",
     "prisma": "^7.4.2",
-    "tsup": "^8.5.1",
-    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }
