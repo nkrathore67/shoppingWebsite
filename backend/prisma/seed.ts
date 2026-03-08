@@ -55,17 +55,37 @@ const PARENT_CATEGORIES = [
   { name: "Kids", slug: "kids", gender: Gender.KIDS, sortOrder: 3 },
 ];
 
-const GENDER_KEYWORDS: Record<string, string> = {
-  men: "men,fashion,shirt,clothing",
-  women: "women,fashion,dress,clothing",
-  kids: "kids,children,fashion,clothing",
+const GENDER_PALETTES: Record<string, { bg: string; fg: string }[]> = {
+  men: [
+    { bg: "1e3a5f", fg: "e8f4f8" },
+    { bg: "243b55", fg: "ddeeff" },
+    { bg: "0d2137", fg: "cce0f5" },
+    { bg: "2c3e6b", fg: "e8f0fe" },
+    { bg: "1a2f4a", fg: "d8ecff" },
+  ],
+  women: [
+    { bg: "7b2d5e", fg: "fce4ec" },
+    { bg: "8e3572", fg: "fdf0f8" },
+    { bg: "6a1f50", fg: "f9e4f0" },
+    { bg: "9c2858", fg: "fde8f0" },
+    { bg: "5c1f45", fg: "f5e0ed" },
+  ],
+  kids: [
+    { bg: "c0392b", fg: "ffeaa7" },
+    { bg: "d35400", fg: "fff3e0" },
+    { bg: "16a085", fg: "e0f8f4" },
+    { bg: "8e44ad", fg: "f5e8ff" },
+    { bg: "f39c12", fg: "fff8e1" },
+  ],
 };
 
-function generateProductImages(gender: string, index: number, count = 2): string[] {
-  const keywords = GENDER_KEYWORDS[gender] ?? "fashion,clothing";
-  return Array.from({ length: count }, (_, i) =>
-    `https://loremflickr.com/400/500/${keywords}/all?lock=${index * count + i + 1}`
-  );
+function generateProductImages(gender: string, noun: string, index: number, count = 2): string[] {
+  const palettes = GENDER_PALETTES[gender] ?? GENDER_PALETTES["men"];
+  const label = encodeURIComponent(noun);
+  return Array.from({ length: count }, (_, i) => {
+    const { bg, fg } = palettes[(index * count + i) % palettes.length];
+    return `https://placehold.co/400x500/${bg}/${fg}?text=${label}&font=playfair-display`;
+  });
 }
 
 function generatePrice() {
@@ -177,7 +197,7 @@ async function main() {
         slug: parent.slug,
         gender: parent.gender,
         sortOrder: parent.sortOrder,
-        imageUrl: `https://loremflickr.com/600/400/${GENDER_KEYWORDS[parent.slug] ?? "fashion,clothing"}/all?lock=${parent.sortOrder}`,
+        imageUrl: `https://placehold.co/600x400/${GENDER_PALETTES[parent.slug]?.[0].bg ?? "374151"}/${GENDER_PALETTES[parent.slug]?.[0].fg ?? "ffffff"}?text=${encodeURIComponent(parent.name)}&font=playfair-display`,
         description: `Shop the latest ${parent.name.toLowerCase()}'s clothing collection`,
       },
     });
@@ -196,7 +216,7 @@ async function main() {
           gender: parent.gender,
           sortOrder: sub.sortOrder,
           parentCategoryId: parentCategory.id,
-          imageUrl: `https://loremflickr.com/600/400/${GENDER_KEYWORDS[parent.slug] ?? "fashion,clothing"}/all?lock=${parent.sortOrder * 100 + sub.sortOrder}`,
+          imageUrl: `https://placehold.co/600x400/${GENDER_PALETTES[parent.slug]?.[(sub.sortOrder - 1) % 5].bg ?? "374151"}/${GENDER_PALETTES[parent.slug]?.[(sub.sortOrder - 1) % 5].fg ?? "ffffff"}?text=${encodeURIComponent(sub.name)}&font=playfair-display`,
           description: `${parent.name}'s ${sub.name} collection`,
         },
       });
@@ -278,7 +298,7 @@ async function main() {
           brand,
           material: faker.helpers.arrayElement(["Cotton", "Polyester", "Silk", "Linen", "Wool", "Denim", "Rayon", "Nylon"]),
           tags: [subCatSlug, genderSlug, brand.toLowerCase(), noun.toLowerCase()],
-          images: generateProductImages(genderSlug, globalProductIndex++),
+          images: generateProductImages(genderSlug, noun, globalProductIndex++),
           isFeatured,
           isNewArrival,
           isBestSeller,
