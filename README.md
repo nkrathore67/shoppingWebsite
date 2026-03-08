@@ -1,75 +1,79 @@
-# ThikanaWear — Local Development
+# ThikanaWear — Deployment
 
-Full-stack clothing e-commerce platform.
+Production deployment using free hosting services.
 
-> **Deployment branch:** Switch to `deploy` branch for production setup.
-
----
-
-## Tech Stack
-
-- **Frontend:** Next.js 15, TypeScript, Tailwind CSS, NextAuth v5, TanStack Query, Zustand
-- **Backend:** Fastify 5, TypeScript, Prisma 7, PostgreSQL
-- **Local DB:** Docker (PostgreSQL + Redis)
+> **Development branch:** Switch to `main` branch for local setup.
 
 ---
 
-## Setup
+## Hosting Stack
 
-**Prerequisites:** Node.js 18+, Docker
+| Part | Service | Free Tier |
+|------|---------|-----------|
+| Frontend | [Vercel](https://vercel.com) | Free forever |
+| Backend | [Render](https://render.com) | 750 hrs/month |
+| Database | [Neon](https://neon.tech) | 0.5 GB free |
 
-### 1. Start the database
-```bash
-docker-compose up -d
-```
+> Render free tier spins down after 15 min inactivity (~30s cold start on first request).
 
-### 2. Backend — `http://localhost:4000`
+---
+
+## Deployment Order
+
+### 1. Neon (Database)
+1. Sign up at neon.tech → create project
+2. Copy connection string: `postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require`
+3. Set `DATABASE_URL` in `backend/.env` to the Neon URL
+4. Run locally:
 ```bash
 cd backend
-npm install
 npm run db:migrate
 npm run db:seed
-npm run dev
 ```
 
-### 3. Frontend — `http://localhost:3000`
-```bash
-cd frontend
-npm install
-npm run dev
-```
+### 2. Render (Backend)
+1. Sign up at render.com → New Web Service → connect GitHub repo
+2. Branch: `deploy` · Root directory: `backend`
+3. Build: `npm install && npx prisma generate && npm run build`
+4. Start: `npm run start`
+5. Add environment variables (see below)
+6. Deploy → copy the service URL
+
+### 3. Vercel (Frontend)
+1. Sign up at vercel.com → Import project → connect GitHub repo
+2. Branch: `deploy` · Root directory: `frontend`
+3. Add environment variables (see below)
+4. Deploy → copy the app URL
+5. Go back to Render → set `FRONTEND_URL` to the Vercel URL → Redeploy
 
 ---
 
 ## Environment Variables
 
-### `backend/.env`
+### Render (backend)
 ```
-NODE_ENV=development
-PORT=4000
-FRONTEND_URL=http://localhost:3000
-DATABASE_URL=postgresql://postgres:password@localhost:5432/shoppingdb
-JWT_ACCESS_SECRET=<min 32 chars>
-JWT_REFRESH_SECRET=<min 32 chars>
+NODE_ENV=production
+DATABASE_URL=<neon connection string>
+FRONTEND_URL=<vercel app url>
+JWT_ACCESS_SECRET=<run: openssl rand -base64 32>
+JWT_REFRESH_SECRET=<run: openssl rand -base64 32>
 JWT_ACCESS_EXPIRY=15m
 JWT_REFRESH_EXPIRY=7d
 ```
 
-### `frontend/.env.local`
+### Vercel (frontend)
 ```
-NEXT_PUBLIC_API_URL=http://localhost:4000/api
-BACKEND_URL=http://localhost:4000
-AUTH_SECRET=<min 32 chars>
-AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_API_URL=<render url>/api
+BACKEND_URL=<render url>
+AUTH_SECRET=<run: openssl rand -base64 32>
+AUTH_URL=<vercel app url>
 ```
 
 ---
 
-## Default Credentials
+## Verify Deployment
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@store.com | admin123456 |
-| Customer | any seeded email | customer123 |
-
-Coupon codes: `WELCOME10`, `FLAT200`, `SUMMER25`
+- `https://<vercel-url>` → homepage loads with products
+- `https://<render-url>/api/products?limit=2` → returns JSON
+- Login as `admin@store.com / admin123456` → no redirect loop
+- `/admin` → dashboard loads
