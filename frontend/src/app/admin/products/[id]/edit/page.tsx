@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Upload } from "lucide-react";
 import Link from "next/link";
 import type { Category, Product } from "@/types";
 
@@ -48,6 +48,25 @@ export default function EditProductPage({ params }: Props) {
   });
   const [variants, setVariants] = useState<VariantInput[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [uploading, setUploading] = useState<number | null>(null);
+
+  const handleFileUpload = async (index: number, file: File) => {
+    setUploading(index);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const { data } = await api.post("/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      const imgs = [...form.images];
+      imgs[index] = data.url;
+      setForm((prev) => ({ ...prev, images: imgs }));
+    } catch {
+      toast.error("Failed to upload image");
+    } finally {
+      setUploading(null);
+    }
+  };
 
   const { data: product, isLoading } = useQuery<Product>({
     queryKey: ["admin-product", id],
@@ -213,20 +232,46 @@ export default function EditProductPage({ params }: Props) {
         <div className="bg-white rounded-xl border p-6 space-y-3">
           <h2 className="font-semibold text-gray-900">Images</h2>
           {form.images.map((img, i) => (
-            <div key={i} className="flex gap-2">
-              <Input
-                value={img}
-                onChange={(e) => {
-                  const imgs = [...form.images];
-                  imgs[i] = e.target.value;
-                  setForm({ ...form, images: imgs });
-                }}
-                placeholder="https://example.com/image.jpg"
-              />
-              {form.images.length > 1 && (
-                <Button type="button" variant="ghost" size="icon" onClick={() => setForm({ ...form, images: form.images.filter((_, j) => j !== i) })}>
-                  <Trash2 className="h-4 w-4 text-red-500" />
-                </Button>
+            <div key={i} className="space-y-2 pb-3 border-b last:border-b-0 last:pb-0">
+              <div className="flex gap-2 items-center">
+                <Input
+                  value={img}
+                  onChange={(e) => {
+                    const imgs = [...form.images];
+                    imgs[i] = e.target.value;
+                    setForm({ ...form, images: imgs });
+                  }}
+                  placeholder="Paste image URL here"
+                  className="flex-1"
+                />
+                {form.images.length > 1 && (
+                  <Button type="button" variant="ghost" size="icon" onClick={() => setForm({ ...form, images: form.images.filter((_, j) => j !== i) })}>
+                    <Trash2 className="h-4 w-4 text-red-500" />
+                  </Button>
+                )}
+              </div>
+              <label className={`flex items-center gap-2 w-fit cursor-pointer px-3 py-1.5 rounded-md border border-dashed text-sm font-medium transition-colors ${uploading === i ? "text-gray-400 border-gray-200 cursor-not-allowed" : "text-purple-700 border-purple-300 hover:bg-purple-50"}`}>
+                {uploading === i ? (
+                  <span className="h-4 w-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin inline-block" />
+                ) : (
+                  <Upload className="h-4 w-4" />
+                )}
+                {uploading === i ? "Uploading..." : "Upload from device"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  disabled={uploading !== null}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFileUpload(i, file);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+              {img && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={img} alt="preview" className="h-20 w-16 object-cover rounded border" />
               )}
             </div>
           ))}
