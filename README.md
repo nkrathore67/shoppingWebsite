@@ -1,17 +1,20 @@
-# ThikanaWear
+# ThikanaWear — Local Development
 
-Full-stack clothing e-commerce platform — Next.js frontend + Fastify backend + PostgreSQL.
+Full-stack clothing e-commerce platform.
 
-## Branches
-
-| Branch | Purpose |
-|--------|---------|
-| `main` | Local development |
-| `deploy` | Production deployment (Vercel + Render) |
+> **Deployment branch:** Switch to `deploy` branch for production setup.
 
 ---
 
-## Local Development (`main`)
+## Tech Stack
+
+- **Frontend:** Next.js 15, TypeScript, Tailwind CSS, NextAuth v5, TanStack Query, Zustand
+- **Backend:** Fastify 5, TypeScript, Prisma 7, PostgreSQL
+- **Local DB:** Docker (PostgreSQL + Redis)
+
+---
+
+## Setup
 
 **Prerequisites:** Node.js 18+, Docker
 
@@ -20,71 +23,53 @@ Full-stack clothing e-commerce platform — Next.js frontend + Fastify backend +
 docker-compose up -d
 ```
 
-### 2. Backend
+### 2. Backend — `http://localhost:4000`
 ```bash
 cd backend
-cp .env.example .env   # fill in values
 npm install
 npm run db:migrate
 npm run db:seed
-npm run dev            # runs on http://localhost:4000
+npm run dev
 ```
 
-### 3. Frontend
+### 3. Frontend — `http://localhost:3000`
 ```bash
 cd frontend
-cp .env.local.example .env.local   # fill in values
 npm install
-npm run dev            # runs on http://localhost:3000
+npm run dev
 ```
-
-### Default credentials
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@store.com | admin123456 |
-| Customer | any seeded email | customer123 |
 
 ---
 
-## Deployment (`deploy` branch)
+## Environment Variables
 
-| Service | Provider | Free tier |
-|---------|----------|-----------|
-| Frontend | [Vercel](https://vercel.com) | Free forever |
-| Backend | [Render](https://render.com) | 750 hrs/month |
-| Database | [Neon](https://neon.tech) | 0.5 GB free |
-
-### Deploy steps
-1. Push `deploy` branch to GitHub
-2. **Neon** — create project, copy connection string, run `npm run db:migrate && npm run db:seed` locally with Neon `DATABASE_URL`
-3. **Render** — New Web Service → connect repo → branch: `deploy` → root: `backend`
-4. **Vercel** — Import project → branch: `deploy` → root: `frontend`
-
-### Required environment variables
-
-**Render (backend)**
+### `backend/.env`
 ```
-NODE_ENV=production
-DATABASE_URL=<neon connection string>
-FRONTEND_URL=<vercel app url>
+NODE_ENV=development
+PORT=4000
+FRONTEND_URL=http://localhost:3000
+DATABASE_URL=postgresql://postgres:password@localhost:5432/shoppingdb
 JWT_ACCESS_SECRET=<min 32 chars>
 JWT_REFRESH_SECRET=<min 32 chars>
 JWT_ACCESS_EXPIRY=15m
 JWT_REFRESH_EXPIRY=7d
 ```
 
-**Vercel (frontend)**
+### `frontend/.env.local`
 ```
-NEXT_PUBLIC_API_URL=<render url>/api
-BACKEND_URL=<render url>
+NEXT_PUBLIC_API_URL=http://localhost:4000/api
+BACKEND_URL=http://localhost:4000
 AUTH_SECRET=<min 32 chars>
-AUTH_URL=<vercel app url>
+AUTH_URL=http://localhost:3000
 ```
 
 ---
 
-## Tech Stack
+## Default Credentials
 
-- **Frontend:** Next.js 15, TypeScript, Tailwind CSS, NextAuth v5, TanStack Query, Zustand
-- **Backend:** Fastify 5, TypeScript, Prisma 7, PostgreSQL
-- **Auth:** JWT (access + refresh tokens), NextAuth Credentials provider
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@store.com | admin123456 |
+| Customer | any seeded email | customer123 |
+
+Coupon codes: `WELCOME10`, `FLAT200`, `SUMMER25`
