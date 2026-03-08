@@ -55,9 +55,16 @@ const PARENT_CATEGORIES = [
   { name: "Kids", slug: "kids", gender: Gender.KIDS, sortOrder: 3 },
 ];
 
-function generateProductImages(slug: string, count = 4): string[] {
+const GENDER_KEYWORDS: Record<string, string> = {
+  men: "men,fashion,shirt,clothing",
+  women: "women,fashion,dress,clothing",
+  kids: "kids,children,fashion,clothing",
+};
+
+function generateProductImages(gender: string, index: number, count = 2): string[] {
+  const keywords = GENDER_KEYWORDS[gender] ?? "fashion,clothing";
   return Array.from({ length: count }, (_, i) =>
-    `https://picsum.photos/seed/${slug}-${i + 1}/800/1000`
+    `https://loremflickr.com/400/500/${keywords}/all?lock=${index * count + i + 1}`
   );
 }
 
@@ -170,7 +177,7 @@ async function main() {
         slug: parent.slug,
         gender: parent.gender,
         sortOrder: parent.sortOrder,
-        imageUrl: `https://picsum.photos/seed/${parent.slug}-cat/600/400`,
+        imageUrl: `https://loremflickr.com/600/400/${GENDER_KEYWORDS[parent.slug] ?? "fashion,clothing"}/all?lock=${parent.sortOrder}`,
         description: `Shop the latest ${parent.name.toLowerCase()}'s clothing collection`,
       },
     });
@@ -189,7 +196,7 @@ async function main() {
           gender: parent.gender,
           sortOrder: sub.sortOrder,
           parentCategoryId: parentCategory.id,
-          imageUrl: `https://picsum.photos/seed/${parent.slug}-${sub.slug}/600/400`,
+          imageUrl: `https://loremflickr.com/600/400/${GENDER_KEYWORDS[parent.slug] ?? "fashion,clothing"}/all?lock=${parent.sortOrder * 100 + sub.sortOrder}`,
           description: `${parent.name}'s ${sub.name} collection`,
         },
       });
@@ -215,6 +222,7 @@ async function main() {
   const subCatSlugs = Object.keys(categoryMap["men"]);
   let productCount = 0;
   const allProducts = [];
+  let globalProductIndex = 0;
 
   for (const { gender, slug: genderSlug } of genders) {
     const brandsForGender = BRANDS[gender];
@@ -270,7 +278,7 @@ async function main() {
           brand,
           material: faker.helpers.arrayElement(["Cotton", "Polyester", "Silk", "Linen", "Wool", "Denim", "Rayon", "Nylon"]),
           tags: [subCatSlug, genderSlug, brand.toLowerCase(), noun.toLowerCase()],
-          images: generateProductImages(slug),
+          images: generateProductImages(genderSlug, globalProductIndex++),
           isFeatured,
           isNewArrival,
           isBestSeller,
